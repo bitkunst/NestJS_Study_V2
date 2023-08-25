@@ -14,6 +14,7 @@ export class MessagesService {
     constructor(public messagesRepo: MessagesRepository) {
         // we do not have any class create its own dependencies inside of a constructor
         // Instead, we're going to use Dependency Injection (DI) to set up dependencies between different classes
+        // The dependency injection system uses type annotation to figure out what instance it needs to inject into class at runtime
     }
 
     findOne(id: string) {

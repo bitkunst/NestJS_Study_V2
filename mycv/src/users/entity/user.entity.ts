@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    AfterInsert,
+    AfterUpdate,
+    AfterRemove,
+} from 'typeorm';
 /**
  * @dev
  * these decorators are going to help TypeORM understand some of the different properties that we are going to add to our entity
@@ -29,4 +36,28 @@ export class User {
 
     @Column()
     password: string;
+
+    @AfterInsert() // decorator that we can apply to a method defined inside of our entity
+    logInsert() {
+        // Whenever we insert a new user into our database, this function should be executed
+        console.log('Inserted User with id', this.id);
+    }
+
+    @AfterUpdate()
+    logUpdate() {
+        console.log('Updated User with id', this.id);
+    }
+
+    @AfterRemove()
+    logRemove() {
+        console.log('Removed User with id', this.id);
+    }
 }
+
+/**
+ * @hooks
+ * we want to add in a function that's going to log out every operation that we do on a user
+ * One way we can very easily implement this is by using a feature inside of TypeORM called hooks
+ * Hooks allow us to define functions on an entity that will be called automatically at certain points in time
+ * hook decorators : @AfterInsert() , @AfterRemove() , @AfterUpdate()
+ */

@@ -135,14 +135,30 @@ $ npm install @nestjs/typeorm typeorm sqlite3
 ## Repository
 
 -   repositories have a set of methods attached to them that we're going to use to work with data inside of our database
+-   create() : create function does not persist or save any information inside of our database. Instead, it takes in some information, creates a new instance of a user entity and then assigns that data.
+-   save() : pass the entity off to the save method. The save method is what actually takes an entity and saves it into our database.
+-   create() is used to create an instance of an entity, save() is used for actual persistence
 
 <image width='500px' src='./public/repository_api.png'>
+
+-   if we save an entity instance, all the hooks tied to that instance will be executed
+-   but if we pass in a plain object and try to save it, no hooks get executed
+
+<image width='500px' src='./public/entity_hooks.png'>
 
 -   Inside TypeORM, there are always more than one way to do something in just about every scenario
 -   There are multiple different ways to achieve just about anything you want to do
 -   And the difference between these different approaches really comes down to some very fine grained details
 
 <image width='500px' src='./public/repository_api2.png'>
+
+-   save() method saves a given entity in the database. If entity does not exist in the database then inserts, otherwise updates.
+-   save() and remove() are designed to work with entity instances
+-   insert() and update() are made to be used with plain objects, but no hooks associated with an entity will be executed
+-   delete() is designed to work with just a plain "id" or some kind of search criteria
+-   if we want to make use of hooks, we're going to rely upon save() and remove()
+
+<image width='500px' src='./public/entity_update.png'>
 
 <br>
 <br>
@@ -173,3 +189,14 @@ bootstrap();
 
 -   `whitelist` : the purpose of this property is to make sure that incoming requests don't have extraneous properties in the body that we are not expecting
 -   By adding in whitelist of true, it's going to make sure that any additional properties that we send along with the request will be stripped out for us automatically
+
+<br>
+<br>
+
+## Exceptions
+
+-   Exceptions provided by Nest are not compatible with any other kind of communication protocol
+-   If we start throwing Http specific errors from our UsersService, we start to have a kind of tough time reusing this service on future controllers that make use of different communication protocols
+-   A very easy thing to do here would be to implement our own exception filter
+
+<image width='500px' src='./public/handle_exceptions.png'>

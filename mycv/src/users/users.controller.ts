@@ -1,5 +1,16 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Query,
+    NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('auth') // used as a prefix for all the different route handlers we define inside this class
@@ -10,5 +21,29 @@ export class UsersController {
     createUser(@Body() body: CreateUserDto) {
         this.usersService.create(body.email, body.password);
         return;
+    }
+
+    @Get(':id')
+    async findUser(@Param('id') id: string) {
+        // @Param() decorator can be used to extract some information out of the incoming request
+        const user = await this.usersService.findOne(parseInt(id));
+        if (!user) throw new NotFoundException('user not found!');
+
+        return user;
+    }
+
+    @Get()
+    findAllUsers(@Query('email') email: string) {
+        return this.usersService.find(email);
+    }
+
+    @Delete(':id')
+    removeUser(@Param('id') id: string) {
+        return this.usersService.remove(parseInt(id));
+    }
+
+    @Patch(':id')
+    updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
+        return this.usersService.update(parseInt(id), body);
     }
 }
