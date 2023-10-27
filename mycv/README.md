@@ -200,3 +200,56 @@ bootstrap();
 -   A very easy thing to do here would be to implement our own exception filter
 
 <image width='500px' src='./public/handle_exceptions.png'>
+
+<br>
+<br>
+
+## Excluding Response Properties
+
+### Nest Recommended solution
+
+62 - 3:23
+
+1. Inside of our user entity instance, we're going to make use of a library that's going to attach a very small set of rules on how to take an instance of a user entity and turn it into a plain object and then into Json
+2. Set up a decorator that is called a `class serializer interceptor`. An interceptor is a tool inside of Nest that allows us to intercept incoming requests or outgoing reponses and mess around with them in some way
+
+### Custom Interceptor
+
+63 - 2:27
+
+1. No longer going to tie any formatting information or anything around serialization directly to our user entity instance because it's pretty clear that we cannot attach any view related logic to that entity because it's really not going to scale and serve multiple different route handlers appropriately
+2. Instead, we are going to create a `custom interceptor`. Remember, an interceptor is a class that's going to mess around in some way with the response before it gets sent back to someone making the request
+3. Inside of this custom interceptor, we are going to serialize or turn our user entity instance into a plain object and then eventually into a plain Json by using some serialization rules set up inside of a DTO
+
+### DTOs
+
+-   DTOs in general are not only used for handling incoming data, DTOs are also used for handling the formatting of outgoing data as well
+-   we are going to create a User DTO that describes exactly how we want to format a user entity
+
+<br>
+<br>
+
+## Interceptors
+
+64 - 1:00
+
+64 - 1:30
+
+-   Inside of our class, the only requirement is that we define a method called specifically `intercept`
+-   This method is going to be called automatically anytime our interceptor needs to run. So handle some incoming request or outgoing response
+
+### context
+
+-   Context is essentially a wrapper around some information on the incoming request
+
+### next
+
+-   somewhat like our actual route handler inside of our controller
+-   It is not exactly the route handler, it's actually a `rxjs observable`
+
+<br>
+
+65 - 0:58
+
+-   Normally, whenever we finish all of our request handlers, whenever we finish all these interceptors, Nest is going to take whatever comes out of all this stuff and turn it into Json for us
+-   So usually user entity instance will be turned into Json, but we're going to kind of hijack that process. We're going to put in an extra step inside there

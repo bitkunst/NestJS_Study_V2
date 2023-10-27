@@ -1,3 +1,7 @@
+/**
+ * @dev
+ * these decorators are going to help TypeORM understand some of the different properties that we are going to add to our entity
+ */
 import {
     Entity,
     Column,
@@ -6,10 +10,7 @@ import {
     AfterUpdate,
     AfterRemove,
 } from 'typeorm';
-/**
- * @dev
- * these decorators are going to help TypeORM understand some of the different properties that we are going to add to our entity
- */
+// import { Exclude } from 'class-transformer';
 
 /**
  * @Entity
@@ -34,6 +35,7 @@ export class User {
     @Column()
     email: string;
 
+    // @Exclude() // decorator that's going to create little set of rules that describe how to take an instance of a user and turn it into a plain object
     @Column()
     password: string;
 
