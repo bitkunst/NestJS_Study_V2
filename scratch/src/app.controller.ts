@@ -5,7 +5,7 @@ import { Controller, Get } from '@nestjs/common';
     we are trying to create a class that is going to serve as a controller inside of our application
 */
 // any route put inside @Controller() decorator is going to apply to all the route handlers that we define inside of this controller
-@Controller('app')
+@Controller('app') // It is a class that is going to handle and route incoming requests
 class AppController {
     // Each method is designed to handle one kind of incoming request
     /*

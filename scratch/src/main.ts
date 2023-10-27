@@ -1,3 +1,6 @@
+// main.ts
+// main.ts is going to be the first file that gets executed in any Nest project
+
 import { NestFactory } from '@nestjs/core';
 import AppModule from './app.module';
 

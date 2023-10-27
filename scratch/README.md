@@ -50,6 +50,16 @@ $ npm install @nestjs/common@7.6.17 @nestjs/core@7.6.17 @nestjs/platform-express
 <br>
 <br>
 
+## File Naming Conventions
+
+-   One class per file (some exceptions)
+-   Class names should include the kind of thing we are creating
+-   Name of class and name of file should always match up
+-   Filename template : **_name.type_of_thing.ts_**
+
+<br>
+<br>
+
 ## Request Lifecycle
 
 1. Incoming request
