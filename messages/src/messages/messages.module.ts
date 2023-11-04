@@ -6,8 +6,8 @@ import { MessagesRepository } from './messages.repository';
 @Module({
     controllers: [MessagesController],
     /**
-     * @dev
-     * providers : things that can be used as dependencies for other classes
+     *  @dev
+     *  providers : things that can be used as dependencies for other classes
      */
     providers: [MessagesService, MessagesRepository],
 })

@@ -20,6 +20,10 @@ $ nest g co messages/messages --flat
 -   `--flat` : Don't create an extra folder called "controllers"
 
 <br>
+
+<image width="600px" src="./public/nest-cli.png">
+
+<br>
 <br>
 
 ## VSCode REST Client Extension
@@ -81,7 +85,7 @@ async function bootstrap() {
 
 -   all we have to do to set up automatic validation for a particular request handler
 
-1. Tell Nest to use global validation
+1. Tell Nest to use global validation (main.ts -> app.useGlobalPipes())
 2. Create a class that describes the different properties that the request body should have (Data Transfer Object; DTO)
 3. Add validation rules to the class (library: class-validator)
 4. Apply that class to the request handler
@@ -96,6 +100,18 @@ async function bootstrap() {
 <image width="800px" height="270px" src="./public/validation_pipe.png">
 
 -   Internally, validation pipe makes use of class-transformer and class-validator to do all of these validations automatically
+
+```json
+// tsconfig.json
+{
+    "compilerOptions": {
+        "emitDecoratorMetadata": true, // allows type information to make it from typescript to javascript
+        "experimentalDecorators": true
+    }
+}
+```
+
+-   `emitDecoratorMetadata` : if you have "emitDecoratorMetadata" option set to "true", a very small amount of type annotations and information will make it over to JavaScript
 
 <br>
 <br>
@@ -112,7 +128,7 @@ async function bootstrap() {
 -   something to run some kind of calculation or stuff like that
 -   also make use of services anytime that we want to `fetch data from a repository`
 -   service is going to frequently use one or more repositories to find and store data
--   services behave as sort of like a proxy that sits in front of repositories
+-   services behave as `sort of like a proxy that sits in front of repositories`
 
 ### Repository
 
@@ -120,6 +136,10 @@ async function bootstrap() {
 -   if we need to directly interact with the database
 -   if we need to write information into a file
 -   repositories usually end up being kind of like a wrapper around some other storage library
+
+<br>
+
+<image width="600px" src="./public/service_repository_method.png">
 
 <br>
 <br>
@@ -136,14 +156,16 @@ async function bootstrap() {
 -   Better example
     -   whenever we create an instance of MessagesService, we would pass in a copy, an already existing copy of the MessagesRepository
     -   so we create a repository ahead of time, and whenever we want a service we're going to pass it into the service
-    -   downside : MessagesService relies upon specifically a copy of MessagesRepository being passed into the constructor <br>
+    -   `downside` : MessagesService always relies upon specifically a copy of MessagesRepository being passed into the constructor. So we always have to create specifically MessagesRepositoy <br>
         <image width="500px" height="350px" src="./public/ioc_better.png" >
 -   Best example
 
+    -   rather than specifically wanting to get a copy of MessagesRepository, we have instead `defined an interface` called simply Repository
     -   do not rely upon getting exactly the MessagesRepository
     -   instead, our code can work perfectly fine as long as you pass it any object that satisfies Repository interface <br>
         <image width="500px" height="550px" src="./public/ioc_best.png" >
 
+-   When we have our code set up with an `interface`, as opposed to a very direct reference to some other class, we can start to do really interesting things
 -   Make MessagesService easier to test and possibly more usable <br>
 
 <image width="600px" height="350px" src="./public/ioc_why.png" >
@@ -166,3 +188,6 @@ const controller = new MessagesController(service);
 <image width="600px" height="300px" src="./public/di_container.png">
 
 <image width="600px" height="350px" src="./public/di_container_flow.png">
+
+-   In general, for every class we create that is not a controller, generally `services and repositories` we're going to add on `@Injectable()` decorator and add that class to our modules list of `providers`
+-   Then everything else is going to happen automatically. Nest is going to automatically create the container for us. It will automatically create the controllers for us as well. And the controllers will get all the appropriate dependencies.
