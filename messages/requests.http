@@ -12,3 +12,6 @@ Content-Type: application/json
 
 ### Get a particular message
 GET http://localhost:3000/messages/141
+
+### Async Test
+GET http://localhost:3000/messages/async

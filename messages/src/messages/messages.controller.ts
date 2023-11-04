@@ -13,6 +13,7 @@ import {
 */
 import { CreateMessageDto } from './dtos/create-message.dto';
 import { MessagesService } from './messages.service';
+import { Worker } from 'worker_threads';
 
 /*
     To set up a route handler in Nest,
@@ -55,5 +56,20 @@ export class MessagesController {
          */
 
         return message;
+    }
+
+    // test blocking I/O with worker
+    @Get('async')
+    async test() {
+        return new Promise((resolve, reject) => {
+            const worker = new Worker('./dist/messages/worker.js'); // 빌드 후의 경로를 지정
+            worker.on('message', resolve);
+            worker.on('error', reject);
+            worker.on('exit', (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Worker stopped with exit code ${code}`));
+                }
+            });
+        });
     }
 }
