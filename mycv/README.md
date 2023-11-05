@@ -258,22 +258,60 @@ bootstrap();
 
 ### Nest Recommended solution
 
-62 - 3:23
+<image width='600px' src='./public/nest_recommend_interceptor.png'>
 
-1. Inside of our user entity instance, we're going to make use of a library that's going to attach a very small set of rules on how to take an instance of a user entity and turn it into a plain object and then into Json
-2. Set up a decorator that is called a `class serializer interceptor`. An interceptor is a tool inside of Nest that allows us to intercept incoming requests or outgoing reponses and mess around with them in some way
+1. Inside of our user entity instance, we're going to make use of a library that's going to attach a very small set of rules on how to `take an instance of a user entity and turn it into a plain object and then into Json`
+2. Set up a decorator that is called a `ClassSerializerInterceptor`. An interceptor is a tool inside of Nest that allows us to intercept incoming requests or outgoing reponses and mess around with them in some way
+
+```typescript
+// user.entity.ts
+
+import { Exclude } from 'class-transformer';
+
+@Entity()
+export class User {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    email: string;
+
+    @Exclude() // decorator that's going to create little set of rules that describe how to take an instance of a User and turn it into a plain object
+    @Column()
+    password: string;
+}
+```
+
+```typescript
+// user.controller.ts
+
+import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+
+    @UseInterceptors(ClassSerializerInterceptor)
+    @Get(':id')
+    async findUser(@Param('id') id: string) {
+        const user = await this.usersService.findOne(parseInt(id));
+        if (!user) throw new NotFoundException('user not found!');
+
+        return user;
+    }
+```
+
+-   `UseInterceptors` , `ClassSerializerInterceptor` are two tools we're using to intercept the outgoing response and mess around with it in some way
+
+<br>
 
 ### Custom Interceptor
 
-63 - 2:27
+<image width='600px' src='./public/nest_custom_interceptor.png'>
 
-1. No longer going to tie any formatting information or anything around serialization directly to our user entity instance because it's pretty clear that we cannot attach any view related logic to that entity because it's really not going to scale and serve multiple different route handlers appropriately
+1. `No longer going to tie any formatting information or anything around serialization directly to our user entity instance` because it's pretty clear that we cannot attach any view related logic to that entity because it's really not going to scale and serve multiple different route handlers appropriately
 2. Instead, we are going to create a `custom interceptor`. Remember, an interceptor is a class that's going to mess around in some way with the response before it gets sent back to someone making the request
-3. Inside of this custom interceptor, we are going to serialize or turn our user entity instance into a plain object and then eventually into a plain Json by using some serialization rules set up inside of a DTO
+3. Inside of this custom interceptor, we are going to `serialize or turn our user entity instance into a plain object and then eventually into a plain Json by using some serialization rules set up inside of a DTO`
 
 ### DTOs
 
--   DTOs in general are not only used for handling incoming data, DTOs are also used for handling the formatting of outgoing data as well
+-   DTOs in general are not only used for handling incoming data, `DTOs are also used for handling the formatting of outgoing data as well`
 -   we are going to create a User DTO that describes exactly how we want to format a user entity
 
 <br>
@@ -281,25 +319,84 @@ bootstrap();
 
 ## Interceptors
 
-64 - 1:00
+<image width='600px' src='./public/interceptor.png'>
 
-64 - 1:30
+<image width='600px' src='./public/interceptor_level.png'>
 
--   Inside of our class, the only requirement is that we define a method called specifically `intercept`
--   This method is going to be called automatically anytime our interceptor needs to run. So handle some incoming request or outgoing response
+<image width='600px' src='./public/custom_interceptor.png'>
 
-### context
+-   Inside of our class, `the only requirement is that we define a method called specifically intercept`
+-   intercept() method is going to be called automatically anytime our interceptor needs to run. So handle some incoming request or outgoing response
+
+### context: ExecutionContext
 
 -   Context is essentially a wrapper around some information on the incoming request
 
-### next
+### next: CallHandler
 
--   somewhat like our actual route handler inside of our controller
+-   `somewhat like our actual route handler inside of our controller`
 -   It is not exactly the route handler, it's actually a `rxjs observable`
 
 <br>
 
-65 - 0:58
+### Serialization in Interceptor
+
+<image width='600px' src='./public/serialization_in_interceptor.png'>
 
 -   Normally, whenever we finish all of our request handlers, whenever we finish all these interceptors, Nest is going to take whatever comes out of all this stuff and turn it into Json for us
 -   So usually user entity instance will be turned into Json, but we're going to kind of hijack that process. We're going to put in an extra step inside there
+    1. take User entity instance
+    2. convert it into a User DTO instance (this DTO instance has all of our different serialization rules)
+    3. directly return DTO instance
+    4. Nest is going to take that instance, turn it into Json automatically and send that back in the response
+
+```typescript
+// user.dto.ts
+
+import { Expose, Exclude } from 'class-transformer';
+
+export class UserDto {
+    @Expose()
+    id: number;
+
+    @Expose()
+    email: string;
+}
+```
+
+-   When Nest tries to serialize User DTO instance or turn it into Json, all the decorator rules will be applied and we're going to only expose the id and the email
+
+<br>
+<br>
+
+## Custom Decorator
+
+-   we can refactor long line of code through custom decorator
+-   decorators are plain functions
+
+### Wrapping the Interceptor in a Decorator
+
+```typescript
+// serialize.interceptor.ts
+
+import {
+    NestInterceptor,
+    ExecutionContext,
+    CallHandler,
+    UseInterceptors,
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
+
+// * Custom decorator
+// pass in the dto that we want to use for serialization
+export function Serialize(dto: any) {
+    return UseInterceptors(new SerializeInterceptor(dto));
+}
+
+class SerializeInterceptor implements NestInterceptor {
+    intercept(
+        context: ExecutionContext,
+        handler: CallHandler,
+    ): Observable<any> {}
+}
+```
