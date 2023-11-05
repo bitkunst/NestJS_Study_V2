@@ -156,7 +156,7 @@ export class UsersModule {}
 
 ### synchronize : true
 
--   we only make use of the `synchronize : true` feature in a `development environment`
+-   we only make use of the `"synchronize: true"` feature in a `development environment`
 -   we never run that synchronize feature of true in a production environment
 -   When we start to move our application into a production environment, we're not going to rely upon that synchronize flag anymore,
 -   Instead we're going to write out migration files
@@ -168,15 +168,21 @@ export class UsersModule {}
 
 ## Repository
 
--   repositories have a set of methods attached to them that we're going to use to work with data inside of our database
+-   `repositories have a set of methods` attached to them that we're going to use to work with data inside of our database
 -   create() : create function does not persist or save any information inside of our database. Instead, it takes in some information, creates a new instance of a user entity and then assigns that data.
 -   save() : pass the entity off to the save method. The save method is what actually takes an entity and saves it into our database.
--   create() is used to create an instance of an entity, save() is used for actual persistence
+-   `create() is used to create an instance of an entity, save() is used for actual persistence`
 
 <image width='500px' src='./public/repository_api.png'>
 
--   if we save an entity instance, all the hooks tied to that instance will be executed
--   but if we pass in a plain object and try to save it, no hooks get executed
+<br>
+
+### Hooks
+
+-   Hooks allow us to define functions on an entity that will be called automatically at certain points in time
+    -   e.g. @AfterInsert() , @AfterRemove() , @AfterUpdate()
+-   `if we save an entity instance, all the hooks tied to that instance will be executed`
+-   `but if we pass in a plain object and try to save it, no hooks get executed`
 
 <image width='500px' src='./public/entity_hooks.png'>
 
@@ -187,10 +193,14 @@ export class UsersModule {}
 <image width='500px' src='./public/repository_api2.png'>
 
 -   save() method saves a given entity in the database. If entity does not exist in the database then inserts, otherwise updates.
--   save() and remove() are designed to work with entity instances
--   insert() and update() are made to be used with plain objects, but no hooks associated with an entity will be executed
+-   `save() and remove() are designed to work with entity instances`
+    -   save() and remove() are expected to be called with entity instances
+    -   if we call them with an entity, hooks will be executed
+    -   but if you make use of insert(), update() or delete() to directly insert, update or delete a record, then hooks will not be executed
+-   `insert() and update() are made to be used with plain objects, but no hooks associated with an entity will be executed`
 -   delete() is designed to work with just a plain "id" or some kind of search criteria
 -   if we want to make use of hooks, we're going to rely upon save() and remove()
+-   but there's kind of a downside to this approach. In order to call save() and apply an update to some record, that implies that we first have to fetch out of our database the User that we are trying to update
 
 <image width='500px' src='./public/entity_update.png'>
 
@@ -198,6 +208,12 @@ export class UsersModule {}
 <br>
 
 ## Validations
+
+-   To set up validation inside of a Nest application we're going to create a DTO, and to create a DTO we're going to use class-validator package
+    -   create a DTO
+    -   set up some validations in the DTO
+    -   add in DTO to Post request handler
+    -   update main.ts file and tell Nest we want to use global validation pipe
 
 ```sh
 $ npm install class-validator class-transformer
@@ -231,7 +247,7 @@ bootstrap();
 
 -   Exceptions provided by Nest are not compatible with any other kind of communication protocol
 -   If we start throwing Http specific errors from our UsersService, we start to have a kind of tough time reusing this service on future controllers that make use of different communication protocols
--   A very easy thing to do here would be to implement our own exception filter
+-   A very easy thing to do here would be to `implement our own exception filter`
 
 <image width='500px' src='./public/handle_exceptions.png'>
 

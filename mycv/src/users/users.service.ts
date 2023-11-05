@@ -7,12 +7,12 @@ import { User } from './entity/user.entity';
 export class UsersService {
     /**
      *
-     * @param repo
-     * Repository<User> : repo is going to be an instance of a TypeORM repository that deals with instances of User
-     * @InjectRepository(User) : This is what is going to tell the dependency injection system that we need the User repository
-     * The dependency injection system uses type annotation to figure out what instance it needs to inject into class at runtime
-     * Unfortunately, Dependency Injection System does not play nicely with generics
-     * So @InjectRepository(User) decorator is required simply because we have to use a generic type
+     *  @param repo
+     *  Repository<User> : repo is going to be an instance of a TypeORM repository that deals with instances of User
+     *  @InjectRepository(User) : This is what is going to tell the dependency injection system that we need the User repository
+     *  The dependency injection system uses type annotation to figure out what instance it needs to inject into class at runtime
+     *  Unfortunately, Dependency Injection System does not play nicely with generics
+     *  So @InjectRepository(User) decorator is required simply because we have to use a generic type
      */
     constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
@@ -22,11 +22,11 @@ export class UsersService {
         // save() : what is going to actually saves user entity to the database
         // we can call the save() method with any kind of object that has the properties that a user should have
         // this.repo.save({ email, password })
-        // then why do we bother first creating an instance of the user entity??
+        // ! then why do we bother first creating an instance of the user entity??
         // there are some scenarios in which we might want to put in some validation logic inside of an Entity class -> @IsEmail()
         // we can tie our validation logic directly to an Entity as opposed to the incoming DTO
         // if we did that, then before we saved our user off into our database, we would want to make sure that we actually ran that validation
-        // so if we wanted to run that validation, we would first have to create an instance of our user
+        // * so if we wanted to run that validation, we would first have to create an instance of our User
         return this.repo.save(user);
     }
 
@@ -51,7 +51,8 @@ export class UsersService {
     }
 
     async remove(id: number) {
-        // return this.repo.delete(id);
+        // return this.repo.delete(id); -> single trip to the database, but no hooks executed
+        // twice the work just to get hooks to run
         const user = await this.findOne(id);
         if (!user) throw new NotFoundException('user not found!');
 

@@ -32,6 +32,7 @@ export class UsersController {
     @Get(':id')
     async findUser(@Param('id') id: string) {
         // @Param() decorator can be used to extract some information out of the incoming request
+        // Whenever we receive a request, every single part of the URL is a string
 
         console.log('handler is running!');
         const user = await this.usersService.findOne(parseInt(id));

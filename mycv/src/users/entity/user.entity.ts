@@ -42,7 +42,7 @@ export class User {
     @AfterInsert() // decorator that we can apply to a method defined inside of our entity
     logInsert() {
         // Whenever we insert a new user into our database, this function should be executed
-        console.log('Inserted User with id', this.id);
+        console.log('Inserted User with id', this.id); // this : reference to the entity that we just inserted
     }
 
     @AfterUpdate()
