@@ -102,17 +102,51 @@ $ npm install @nestjs/typeorm typeorm sqlite3
 
 <br>
 
--   Create connnection to database inside of the AppModule
+-   `Create connnection to database inside of the AppModule`
 -   When we do so, that connection is going to be automatically shared and spread throughout all the different modules of our project
--   Entity : an entity is very similar to a model
+-   `Entity : an entity is very similar to a model`
 -   An entity file defines a single kind of resource or a single kind of thing that we want to store inside of our application
 -   When we are using TypeORM we do not have to create repository files manually. Instead, repositories are going to be created for us automatically behind the scenes
 
+### Set up DB connection
+
+```typescript
+// app.module.ts
+
+@Module({
+    imports: [
+        TypeOrmModule.forRoot({
+            type: 'sqlite', // SQLite Database
+            database: 'db.sqlite',
+            entities: [User, Report], // list out all the different entities or things we want to store inside of our application
+            synchronize: true, // true: dev mode
+        }),
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+})
+export class AppModule {}
+```
+
 ### Creating an Entity
+
+Create an `entity` which is going to model some kind of resource inside of our application
 
 1. Create an entity file, and create a class in it that lists all the properties that your entity will have
 2. Connect the entity to its parent module. This creates a repository
 3. Connect the entity to the root connection (in app module)
+
+```typescript
+// users.module.ts
+
+@Module({
+    // Connect the Entity to its parent module -> this step creates a repository for us
+    imports: [TypeOrmModule.forFeature([User])],
+    controllers: [UsersController],
+    providers: [UsersService],
+})
+export class UsersModule {}
+```
 
 <br>
 
