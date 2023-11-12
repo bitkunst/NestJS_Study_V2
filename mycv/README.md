@@ -439,3 +439,19 @@ For a very small application, option #1 makes a lot of sense, but as soon as you
 ### Solution for Rainbow Table Attack
 
 <image width='600px' src='./public/signup_with_salt.png'>
+
+<br>
+
+### Cookie-session
+
+```sh
+$ npm install cookie-session @types/cookie-session
+```
+
+<br>
+
+### Auth system features
+
+-   `Guard` : it guards a route and it forbids access to that route if some condition is not met
+
+<image width='600px' src='./public/auth_system.png'>
