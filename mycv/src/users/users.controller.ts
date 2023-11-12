@@ -19,20 +19,23 @@ import {
     Serialize,
 } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
+import { AuthService } from './auth.service';
 
 @Controller('auth') // used as a prefix for all the different route handlers we define inside this class
+@Serialize(UserDto) // Wrapping the interceptor in a custom decorator
 export class UsersController {
-    constructor(private usersService: UsersService) {}
+    constructor(
+        private usersService: UsersService,
+        private authService: AuthService,
+    ) {}
 
     @Post('signup')
     createUser(@Body() body: CreateUserDto) {
-        this.usersService.create(body.email, body.password);
-        return;
+        return this.authService.signup(body.email, body.password);
     }
 
     // @UseInterceptors(ClassSerializerInterceptor)
     // @UseInterceptors(new SerializeInterceptor(UserDto)) // wanted to use specifically UserDto for serialization
-    @Serialize(UserDto) // Wrapping the interceptor in a custom decorator
     @Get(':id')
     async findUser(@Param('id') id: string) {
         // @Param() decorator can be used to extract some information out of the incoming request

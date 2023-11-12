@@ -400,3 +400,42 @@ class SerializeInterceptor implements NestInterceptor {
     ): Observable<any> {}
 }
 ```
+
+<br>
+<br>
+
+## Authentication
+
+<image width='600px' src='./public/auth_flow.png'>
+
+### Options for implementing authentication flow
+
+1. Add more functionality to the UsersService
+    - e.g. signup(), signin()
+2. Create a new AuthService that relies on UsersService
+    - AuthService
+        - signup()
+        - signin()
+
+For a very small application, option #1 makes a lot of sense, but as soon as your application starts growing in size recommend going with option #2
+
+### DI Container Flow
+
+<image width='600px' src='./public/di_container_flow.png'>
+
+<br>
+
+### Hashing function
+
+-   if we ever change the input, we're going to get back a completely different output
+-   once we apply a hashing function to a string and we get some output, we cannot undo that process
+    -   if we've got just the output by itself, we have no way whatsoever of figuring out what the original input was
+
+<image width='600px' src='./public/hashing_function1.png'>
+<image width='600px' src='./public/hashing_function2.png'>
+
+<br>
+
+### Solution for Rainbow Table Attack
+
+<image width='600px' src='./public/signup_with_salt.png'>
