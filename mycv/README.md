@@ -470,3 +470,22 @@ $ npm install cookie-session @types/cookie-session
 
 **_globally scoped interceptor_**
 <image width='600px' src='./public/globally_scoped_interceptor.png'>
+
+<br>
+
+### Guard
+
+-   Guard is something that allows us to prevent access to certain controllers or route handlers based upon whether or not the use is signed in
+-   A guard in general is implemented by creating a class
+-   This class must have a method called `canActivate()`
+
+<image width='600px' src='./public/guard.png'>
+
+-   canActivate() method is going to be called automatically anytime there's an incoming request. And our goal is to look at that request and either return a truthy value or a falsy value
+-   If we return a value that is truthy in nature, then the request can go through. Otherwise if we return something that is falsy such as undefined, null, zero, empty string, false and so on, then the request will be automatically rejected
+-   Once we create a guard, there are several different locations we can apply it
+    -   make use of guard to prevent any traffic from coming into our entire application
+    -   we can apply a guard to an individual controller (it would limit access to all the different handlers inside controller)
+    -   we can apply a guard to individual handlers themselves
+
+<image width='600px' src='./public/guard_location.png'>

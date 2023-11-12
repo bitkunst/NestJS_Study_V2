@@ -10,6 +10,7 @@ import {
     NotFoundException,
     UseInterceptors,
     Session, // get us access to entire session object inside of any of our different route handlers
+    UseGuards,
     // ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +24,7 @@ import { UserDto } from './dto/user.dto';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorator/current-user.decorator';
 import { User } from './entity/user.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth') // used as a prefix for all the different route handlers we define inside this class
 @Serialize(UserDto) // Wrapping the interceptor in a custom decorator
@@ -39,6 +41,7 @@ export class UsersController {
     // }
 
     @Get('whoami')
+    @UseGuards(AuthGuard)
     whoAmI(@CurrentUser() user: User) {
         return user;
     }
