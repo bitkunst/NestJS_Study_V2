@@ -21,18 +21,26 @@ import {
 } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorator/current-user.decorator';
+import { User } from './entity/user.entity';
 
 @Controller('auth') // used as a prefix for all the different route handlers we define inside this class
 @Serialize(UserDto) // Wrapping the interceptor in a custom decorator
+// @UseInterceptors(CurrentUserInterceptor)
 export class UsersController {
     constructor(
         private usersService: UsersService,
         private authService: AuthService,
     ) {}
 
+    // @Get('whoami')
+    // whoAmI(@Session() session: any) {
+    //     return this.usersService.findOne(session.userId);
+    // }
+
     @Get('whoami')
-    whoAmI(@Session() session: any) {
-        return this.usersService.findOne(session.userId);
+    whoAmI(@CurrentUser() user: User) {
+        return user;
     }
 
     @Post('signup')

@@ -455,3 +455,18 @@ $ npm install cookie-session @types/cookie-session
 -   `Guard` : it guards a route and it forbids access to that route if some condition is not met
 
 <image width='600px' src='./public/auth_system.png'>
+
+-   Decorator can't get access to dependency injection. So instead, we have to create an Interceptor
+-   All interceptors that we make can be a part of the dependency injection system
+-   Interceptor is going to read in the Session Object and it's also going to read in through dependency injection, our UsersService
+-   Inside the interceptor, that is where we are going to do our lookup for the current user
+
+<image width='600px' src='./public/auth_current_user.png'>
+
+<br>
+
+**_controller scoped interceptor_**
+<image width='600px' src='./public/controller_scoped_interceptor.png'>
+
+**_globally scoped interceptor_**
+<image width='600px' src='./public/globally_scoped_interceptor.png'>
