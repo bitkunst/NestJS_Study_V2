@@ -152,7 +152,7 @@ export class UsersModule {}
 
 ### Most SQL ORMs
 
-<image width='500px' src='./public/sql_orm.png'>
+<image width='700px' src='./public/sql_orm.png'>
 
 ### synchronize : true
 
@@ -161,7 +161,7 @@ export class UsersModule {}
 -   When we start to move our application into a production environment, we're not going to rely upon that synchronize flag anymore,
 -   Instead we're going to write out migration files
 
-<image width='500px' src='./public/synchronize_true.png'>
+<image width='700px' src='./public/synchronize_true.png'>
 
 <br>
 <br>
@@ -173,7 +173,7 @@ export class UsersModule {}
 -   save() : pass the entity off to the save method. The save method is what actually takes an entity and saves it into our database.
 -   `create() is used to create an instance of an entity, save() is used for actual persistence`
 
-<image width='500px' src='./public/repository_api.png'>
+<image width='700px' src='./public/repository_api.png'>
 
 <br>
 
@@ -184,13 +184,13 @@ export class UsersModule {}
 -   `if we save an entity instance, all the hooks tied to that instance will be executed`
 -   `but if we pass in a plain object and try to save it, no hooks get executed`
 
-<image width='500px' src='./public/entity_hooks.png'>
+<image width='700px' src='./public/entity_hooks.png'>
 
 -   Inside TypeORM, there are always more than one way to do something in just about every scenario
 -   There are multiple different ways to achieve just about anything you want to do
 -   And the difference between these different approaches really comes down to some very fine grained details
 
-<image width='500px' src='./public/repository_api2.png'>
+<image width='700px' src='./public/repository_api2.png'>
 
 -   save() method saves a given entity in the database. If entity does not exist in the database then inserts, otherwise updates.
 -   `save() and remove() are designed to work with entity instances`
@@ -202,7 +202,7 @@ export class UsersModule {}
 -   if we want to make use of hooks, we're going to rely upon save() and remove()
 -   but there's kind of a downside to this approach. In order to call save() and apply an update to some record, that implies that we first have to fetch out of our database the User that we are trying to update
 
-<image width='500px' src='./public/entity_update.png'>
+<image width='700px' src='./public/entity_update.png'>
 
 <br>
 <br>
@@ -249,7 +249,7 @@ bootstrap();
 -   If we start throwing Http specific errors from our UsersService, we start to have a kind of tough time reusing this service on future controllers that make use of different communication protocols
 -   A very easy thing to do here would be to `implement our own exception filter`
 
-<image width='500px' src='./public/handle_exceptions.png'>
+<image width='700px' src='./public/handle_exceptions.png'>
 
 <br>
 <br>
@@ -466,9 +466,13 @@ $ npm install cookie-session @types/cookie-session
 <br>
 
 **_controller scoped interceptor_**
+
 <image width='700px' src='./public/controller_scoped_interceptor.png'>
 
+<br>
+
 **_globally scoped interceptor_**
+
 <image width='700px' src='./public/globally_scoped_interceptor.png'>
 
 <br>

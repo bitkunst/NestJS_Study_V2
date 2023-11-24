@@ -67,6 +67,8 @@ it('can create an instance of auth service', async () => {
 });
 ```
 
+<br>
+
 -   `providers` array is a listing of all the different classes that we might want to inject into our DI container
 -   Essentially the list of providers is a list of classes we want registered inside the DI container
 
@@ -87,4 +89,4 @@ it('can create an instance of auth service', async () => {
 
 -   The reason that we are only defining "find()" and "create()" is that those are the only methods that are actually make use of by AuthService
 
--   image 93.0:33
+<image width='700px' src='./public/test/fake_service.png'>
