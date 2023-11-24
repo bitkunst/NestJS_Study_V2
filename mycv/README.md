@@ -86,7 +86,7 @@
 
 ## Making use of Databases
 
-<image width='600px' src='./public/databases.png'>
+<image width='700px' src='./public/databases.png'>
 
 <br>
 
@@ -98,7 +98,7 @@ $ npm install @nestjs/typeorm typeorm sqlite3
 
 <br>
 
-<image width='600px' src='./public/typeorm_diagram.png'>
+<image width='700px' src='./public/typeorm_diagram.png'>
 
 <br>
 
@@ -258,7 +258,7 @@ bootstrap();
 
 ### Nest Recommended solution
 
-<image width='600px' src='./public/nest_recommend_interceptor.png'>
+<image width='700px' src='./public/nest_recommend_interceptor.png'>
 
 1. Inside of our user entity instance, we're going to make use of a library that's going to attach a very small set of rules on how to `take an instance of a user entity and turn it into a plain object and then into Json`
 2. Set up a decorator that is called a `ClassSerializerInterceptor`. An interceptor is a tool inside of Nest that allows us to intercept incoming requests or outgoing reponses and mess around with them in some way
@@ -303,7 +303,7 @@ import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 
 ### Custom Interceptor
 
-<image width='600px' src='./public/nest_custom_interceptor.png'>
+<image width='700px' src='./public/nest_custom_interceptor.png'>
 
 1. `No longer going to tie any formatting information or anything around serialization directly to our user entity instance` because it's pretty clear that we cannot attach any view related logic to that entity because it's really not going to scale and serve multiple different route handlers appropriately
 2. Instead, we are going to create a `custom interceptor`. Remember, an interceptor is a class that's going to mess around in some way with the response before it gets sent back to someone making the request
@@ -319,11 +319,11 @@ import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 
 ## Interceptors
 
-<image width='600px' src='./public/interceptor.png'>
+<image width='700px' src='./public/interceptor.png'>
 
-<image width='600px' src='./public/interceptor_level.png'>
+<image width='700px' src='./public/interceptor_level.png'>
 
-<image width='600px' src='./public/custom_interceptor.png'>
+<image width='700px' src='./public/custom_interceptor.png'>
 
 -   Inside of our class, `the only requirement is that we define a method called specifically intercept`
 -   intercept() method is going to be called automatically anytime our interceptor needs to run. So handle some incoming request or outgoing response
@@ -341,7 +341,7 @@ import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 
 ### Serialization in Interceptor
 
-<image width='600px' src='./public/serialization_in_interceptor.png'>
+<image width='700px' src='./public/serialization_in_interceptor.png'>
 
 -   Normally, whenever we finish all of our request handlers, whenever we finish all these interceptors, Nest is going to take whatever comes out of all this stuff and turn it into Json for us
 -   So usually user entity instance will be turned into Json, but we're going to kind of hijack that process. We're going to put in an extra step inside there
@@ -406,7 +406,7 @@ class SerializeInterceptor implements NestInterceptor {
 
 ## Authentication
 
-<image width='600px' src='./public/auth_flow.png'>
+<image width='700px' src='./public/auth_flow.png'>
 
 ### Options for implementing authentication flow
 
@@ -421,7 +421,7 @@ For a very small application, option #1 makes a lot of sense, but as soon as you
 
 ### DI Container Flow
 
-<image width='600px' src='./public/di_container_flow.png'>
+<image width='700px' src='./public/di_container_flow.png'>
 
 <br>
 
@@ -431,14 +431,14 @@ For a very small application, option #1 makes a lot of sense, but as soon as you
 -   once we apply a hashing function to a string and we get some output, we cannot undo that process
     -   if we've got just the output by itself, we have no way whatsoever of figuring out what the original input was
 
-<image width='600px' src='./public/hashing_function1.png'>
-<image width='600px' src='./public/hashing_function2.png'>
+<image width='700px' src='./public/hashing_function1.png'>
+<image width='700px' src='./public/hashing_function2.png'>
 
 <br>
 
 ### Solution for Rainbow Table Attack
 
-<image width='600px' src='./public/signup_with_salt.png'>
+<image width='700px' src='./public/signup_with_salt.png'>
 
 <br>
 
@@ -454,22 +454,22 @@ $ npm install cookie-session @types/cookie-session
 
 -   `Guard` : it guards a route and it forbids access to that route if some condition is not met
 
-<image width='600px' src='./public/auth_system.png'>
+<image width='700px' src='./public/auth_system.png'>
 
 -   Decorator can't get access to dependency injection. So instead, we have to create an Interceptor
 -   All interceptors that we make can be a part of the dependency injection system
 -   Interceptor is going to read in the Session Object and it's also going to read in through dependency injection, our UsersService
 -   Inside the interceptor, that is where we are going to do our lookup for the current user
 
-<image width='600px' src='./public/auth_current_user.png'>
+<image width='700px' src='./public/auth_current_user.png'>
 
 <br>
 
 **_controller scoped interceptor_**
-<image width='600px' src='./public/controller_scoped_interceptor.png'>
+<image width='700px' src='./public/controller_scoped_interceptor.png'>
 
 **_globally scoped interceptor_**
-<image width='600px' src='./public/globally_scoped_interceptor.png'>
+<image width='700px' src='./public/globally_scoped_interceptor.png'>
 
 <br>
 
@@ -479,7 +479,7 @@ $ npm install cookie-session @types/cookie-session
 -   A guard in general is implemented by creating a class
 -   This class must have a method called `canActivate()`
 
-<image width='600px' src='./public/guard.png'>
+<image width='700px' src='./public/guard.png'>
 
 -   canActivate() method is going to be called automatically anytime there's an incoming request. And our goal is to look at that request and either return a truthy value or a falsy value
 -   If we return a value that is truthy in nature, then the request can go through. Otherwise if we return something that is falsy such as undefined, null, zero, empty string, false and so on, then the request will be automatically rejected
@@ -488,4 +488,4 @@ $ npm install cookie-session @types/cookie-session
     -   we can apply a guard to an individual controller (it would limit access to all the different handlers inside controller)
     -   we can apply a guard to individual handlers themselves
 
-<image width='600px' src='./public/guard_location.png'>
+<image width='700px' src='./public/guard_location.png'>
