@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
+import { APP_PIPE } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as path from 'path';
+import cookieSession from 'cookie-session';
 
 @Module({
     /**
@@ -24,9 +26,33 @@ import * as path from 'path';
         ReportsModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            // Whenever we create an instance of our AppModule,
+            // automatically take the value of useValue and apply it to every incoming request that flows into our application
+            // Global Pipe
+            provide: APP_PIPE,
+            useValue: new ValidationPipe({
+                whitelist: true,
+            }),
+        },
+    ],
 })
-export class AppModule {}
+export class AppModule {
+    // configure function is going to be called automatically whenever our application starts listening for incoming traffic
+    configure(consumer: MiddlewareConsumer) {
+        // set up some middleware that will run on every single incoming request
+        // Global middleware
+        consumer
+            .apply(
+                cookieSession({
+                    keys: ['secret'], // going to be used to encrypt the information that is stored inside the cookie
+                }),
+            )
+            .forRoutes('*');
+    }
+}
 
 /**
  *  @SQLite

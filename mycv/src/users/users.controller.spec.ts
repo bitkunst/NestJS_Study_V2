@@ -8,7 +8,7 @@ import { NotFoundException } from '@nestjs/common';
 /**
  *  Whenever we are testing methods inside of a controller,
  *  we don't get the ability to run or make any use of the surrounding decorators
- *  We are testing just the method by itself without any decorators present
+ *  * We are testing just the method by itself without any decorators present *
  *  If you want to test the decorators, then we have to write out an end-to-end test
  */
 

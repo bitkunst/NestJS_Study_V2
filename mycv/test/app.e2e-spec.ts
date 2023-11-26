@@ -16,9 +16,9 @@ describe('AppController (e2e)', () => {
     });
 
     it('/ (GET)', () => {
-        return request(app.getHttpServer())
-            .get('/')
-            .expect(200)
-            .expect('Hello World!');
+        return request(app.getHttpServer()) // forming up a request
+            .get('/') // making a GET method request to the root route
+            .expect(200) // expecting that we get back a status code of 200
+            .expect('Hello World!'); // and in the body of the response, there should be a string of "Hello World!"
     });
 });
