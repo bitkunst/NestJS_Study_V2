@@ -249,3 +249,144 @@ export class AppModule {
     -   And then a totally separate database that will be used when we are testing our application using the end-to-end test suite
 
 <image width='700px' src='./public/test/e2e_database_how.png'>
+
+<br>
+
+### dotenv
+
+-   The only goal of this library is to put together a list of different environment variables that exist on your machine
+-   It's going to do so by taking a look at all the different `normal environment variables that are defined`,
+-   And it's also optionally going to `read in the contents of some file(.env) inside of your project` as well
+    -   try to pull some environment configuration from that file
+    -   usually by default we call this file `dot env (.env)` file
+-   dotenv library is going to read in configuration information from both locations, assemble all that information into a single object and then give it back to us
+-   If there's ever any conflict between the environment variables between two locations, then `the normal environment variable on your machine is going to take precedence`
+
+<image width='700px' src='./public/test/dotenv.png'>
+<image width='700px' src='./public/test/dotenv_2.png'>
+
+-   The object(\*) that is created by the dotenv library is then going to be exposed to the rest of our application through the `ConfigService`
+-   So we're going to use dependency injection to get access to that ConfigService and then use that service to read values out of the object(\*)
+
+```ts
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+@Module({
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true, // use ConfigModule globally
+            // we do not have to re-import the ConfigModule all over the place into other modules inside of our project whenever we want to get some config information
+            envFilePath: `.env.${process.env.NODE_ENV}`, // put in exactly which files we want to use
+        }),
+        TypeOrmModule.forRootAsync({
+            inject: [ConfigService],
+            // Tell DI system that we want to go and find the configuration service which should have all of our config info inside of it from our chosen file
+            // And we want to get access to that instance of the ConfigService during the setup of our TypeOrmModule
+            useFactory: (config: ConfigService) => {
+                return {
+                    type: 'sqlite',
+                    database: config.get<string>('DB_NAME'),
+                    entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
+                    synchronize: true,
+                };
+            },
+        }),
+        UsersModule,
+        ReportsModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+})
+export class AppModule {}
+```
+
+**_ConfigModule_**
+
+-   ConfigModule is what we're going to use to `specify which of different files we actually want to read`
+
+**_ConfigService_**
+
+-   The ConfigService is what is going to `expose the information inside files to the rest of our application`
+
+<br>
+
+```sh
+$ npm install cross-env
+```
+
+-   cross-env library is all about allowing us to set up different environment variables very easily inside `package.json -> scripts` section that are going to work accross Windows or Mac or something else
+
+```json
+{
+    "scripts": {
+        "start": "cross-env NODE_ENV=development nest start",
+        "start:dev": "cross-env NODE_ENV=development nest start --watch",
+        "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
+
+        "test": "cross-env NODE_ENV=test jest",
+        "test:watch": "cross-env NODE_ENV=test jest --watch --maxWorkers=1",
+        "test:cov": "cross-env NODE_ENV=test jest --coverage",
+        "test:debug": "cross-env NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+        "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json"
+    }
+}
+```
+
+<br>
+
+### SQLite Error issue
+
+-   QueryFailedError: SQLITE_BUSY: database is locked
+    -   Jest is trying to run multiple different tests at the exact same time
+    -   In general, SQLite does not like to see multiple different connections to it
+-   To solve this problem, we're going to tell jest don't try to run our tests in parallel. Just run one test at a time
+
+```sh
+# jest option --maxWorkers
+## only try to run one spec file at a time
+$ --maxWorkers=1
+```
+
+```json
+{
+    "scripts": {
+        "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json --maxWorkers=1"
+    }
+}
+```
+
+<br>
+
+### Jest's test execution process
+
+1. Test environment setup
+    - In this step, Jest's test runner is initialized and the test environment(e.g. Node) is set up
+    - This environment provides the context in which each test file runs
+2. Run `setupFilesAfterEnv`
+    - After the test environment is set up, the files specified in the setupFilesAfterEnv option are run
+    - At this point the test environment is ready, but before the actual test files are run
+    - Here you can configure global settings, configure custom matchers, configure global mocks, etc
+3. Run test file
+    - After the tasks set in setupFilesAfterEnv are completed, Jest runs the actual test files
+    - In this step, test cases (it, test) and test lifecycle methods (beforeEach, afterEach, beforeAll, afterAll) are executed
+
+### jest-e2e.json
+
+```json
+// test/jest-e2e.json
+{
+    "moduleFileExtensions": ["js", "json", "ts"],
+    "rootDir": "../",
+    "modulePaths": ["<rootDir>"],
+    "testEnvironment": "node",
+    "testRegex": ".e2e-spec.ts$",
+    "transform": {
+        "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "setupFilesAfterEnv": ["<rootDir>/test/setup.ts"]
+}
+```
+
+-   `setupFilesAfterEnv` : defines a file that's going to be executed right before all of our tests are just about to be executed
+    -   Specifies a list of files to be run before the test files are run, but after the test environment is set up.
+    -   Global beforeEach()

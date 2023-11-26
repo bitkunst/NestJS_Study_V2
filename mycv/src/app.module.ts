@@ -7,21 +7,37 @@ import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as path from 'path';
 import cookieSession from 'cookie-session';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-    /**
-     *  @dev
-     *  TypeOrmModule.forRoot() : into forRoot(), we're going to pass a configuration object
-     *  setting up the connection to the database
-     *  connection is going to be automatically shared down into the all other modules inside of our project
-     */
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'sqlite', // SQLite Database
-            database: 'db.sqlite',
-            entities: [path.join(__dirname, '**', '*.entity.{ts,js}')], // list out all the different entities or things we want to store inside of our application
-            synchronize: true, // true: dev mode
+        ConfigModule.forRoot({
+            isGlobal: true, // use ConfigModule globally
+            envFilePath: `.env.${process.env.NODE_ENV}`, // put in exactly which files we want to use
         }),
+        /**
+         *  @dev
+         *  TypeOrmModule.forRoot() : into forRoot(), we're going to pass a configuration object
+         *  setting up the connection to the database
+         *  connection is going to be automatically shared down into the all other modules inside of our project
+         */
+        TypeOrmModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => {
+                return {
+                    type: 'sqlite', // SQLite Database
+                    database: config.get<string>('DB_NAME'),
+                    entities: [path.join(__dirname, '**', '*.entity.{ts,js}')], // list out all the different entities or things we want to store inside of our application
+                    synchronize: true, // true: dev mode
+                };
+            },
+        }),
+        // TypeOrmModule.forRoot({
+        //     type: 'sqlite', // SQLite Database
+        //     database: 'db.sqlite',
+        //     entities: [path.join(__dirname, '**', '*.entity.{ts,js}')], // list out all the different entities or things we want to store inside of our application
+        //     synchronize: true, // true: dev mode
+        // }),
         UsersModule,
         ReportsModule,
     ],

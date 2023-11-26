@@ -30,4 +30,27 @@ describe('Authentication System', () => {
                 expect(email).toEqual(signupEmail);
             });
     });
+
+    it('signup as a new user then get the currently logged in user', async () => {
+        const email = 'asdf@asdf.com';
+
+        // when we get a cookie back from making this request,
+        // we need to temporarily store that cookie
+        // "res" is the response that we get back from making this entire request
+        const res = await request(app.getHttpServer())
+            .post('/auth/signup')
+            .send({ email, password: '1234' })
+            .expect(201);
+
+        // pulling out the Set-Cookie header,
+        // which is where a cookie is usually sent back to us inside of a response
+        const cookie = res.get('Set-Cookie');
+        // send along this cookie as a header inside the request
+        const { body } = await request(app.getHttpServer())
+            .get('/auth/whoami')
+            .set('Cookie', cookie)
+            .expect(200);
+
+        expect(body.email).toEqual(email);
+    });
 });
